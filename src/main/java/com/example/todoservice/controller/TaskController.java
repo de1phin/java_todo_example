@@ -1,6 +1,8 @@
 package com.example.todoservice.controller;
 
+import com.example.todoservice.messaging.TaskProducer;
 import com.example.todoservice.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +15,11 @@ import java.util.List;
 public class TaskController {
 
     private final HashMap<Long, Task> tasks = new HashMap<>();
+    private final TaskProducer taskProducer;
+
+    public TaskController(TaskProducer taskProducer) {
+        this.taskProducer = taskProducer;
+    }
 
     @GetMapping
     public List<Task> getAllTasks() {
@@ -31,6 +38,7 @@ public class TaskController {
     @PostMapping
     public Task createTask(@RequestBody Task task) {
         tasks.put(task.getId(), task);
+        taskProducer.send(task);
         return task;
     }
 
