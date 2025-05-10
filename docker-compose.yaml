@@ -10,3 +10,18 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: super-secret-password
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_DB: todo_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: do-not-steal
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
