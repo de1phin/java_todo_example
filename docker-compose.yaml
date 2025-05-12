@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -21,6 +19,22 @@ services:
       POSTGRES_PASSWORD: do-not-steal
     volumes:
       - pgdata:/var/lib/postgresql/data
+  todo_server:
+    image: spring-todo:latest
+    container_name: todo_server
+    ports:
+    - "8080:8080"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/todo_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: do-not-steal
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: super-secret-password
 
 volumes:
   pgdata:
